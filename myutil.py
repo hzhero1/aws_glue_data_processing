@@ -18,8 +18,8 @@ def random_extract(path_csv, num_extract, range_lower, range_upper, suffix):
             break
 
 
-# 控制处理
-def process_empty_value(path):
+# 空值处理
+def process_empty_value_imdb(path):
     csv_origin = open(path, 'r', encoding='utf-8')
     csv_target = open(os.path.splitext(path)[0] + "_new.csv", 'w', encoding='utf-8')
     md5_count = 0
@@ -36,7 +36,34 @@ def process_empty_value(path):
                     md5_count += 1
                     data[i] = data[i].replace(r'\N', hl.hexdigest())
             data = ','.join(data)
-            # data = '"' + '","'.join(re.split(r'[|\n]', data.strip('\n'))) + '"\n'
+            csv_target.writelines(data)
+            row_count += 1
+            print('Processed {} rows.'.format(row_count))
+        else:
+            break
+
+
+def process_empty_value_dblp(path):
+    csv_origin = open(path, 'r', encoding='utf-8')
+    csv_target = open(os.path.splitext(path)[0] + "_new.csv", 'w', encoding='utf-8')
+    md5_count = 0
+    row_count = 0
+    hl = hashlib.md5()
+
+    while True:
+        data = csv_origin.readline()
+        if data:
+            data = data.split(',')
+            for i, value in enumerate(data):
+                if len(value) == 0:
+                    hl.update(str(md5_count).encode(encoding='utf-8'))
+                    md5_count += 1
+                    data[i] = hl.hexdigest()
+                elif value == '\n':
+                    hl.update(str(md5_count).encode(encoding='utf-8'))
+                    md5_count += 1
+                    data[i] = hl.hexdigest() + '\n'
+            data = ','.join(data)
             csv_target.writelines(data)
             row_count += 1
             print('Processed {} rows.'.format(row_count))
