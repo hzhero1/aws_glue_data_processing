@@ -12,6 +12,9 @@ path_paper_author = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\processed\
 path_paper_venue = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\processed\paper_venue_new.csv"
 path_paper_fos = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_fos.csv"
 
+path_AMOT = r"D:\测试数据集\TFACC\AMOT\AMOT_csv"
+path_AMOT_target = r"D:\测试数据集\TFACC\AMOT\AMOT_csv\empty_processed\\"
+
 path = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_venue.csv"
 
 # process_empty_value_dblp(path)
@@ -27,13 +30,16 @@ path = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_venue.csv"
 # random_extract(path_title_principles, num_extract_10w, 20, 400, "_sub_10w")
 
 # extract dblp
-random_extract(path_paper, num_extract_1w, 200, 490, "_sub_1w")
-random_extract(path_paper, num_extract_10w, 20, 49, "_sub_10w")
-random_extract(path_paper_author, num_extract_1w, 200, 1500, "_sub_1w")
-random_extract(path_paper_author, num_extract_10w, 20, 150, "_sub_10w")
-random_extract(path_paper_venue, num_extract_1w, 200, 480, "_sub_1w")
-random_extract(path_paper_venue, num_extract_10w, 20, 48, "_sub_10w")
-random_extract(path_paper_fos, num_extract_1w, 200, 4500, "_sub_1w")
-random_extract(path_paper_fos, num_extract_10w, 20, 450, "_sub_10w")
+# random_extract(path_paper, num_extract_1w, 200, 490, "_sub_1w")
+# random_extract(path_paper, num_extract_10w, 20, 49, "_sub_10w")
+# random_extract(path_paper_author, num_extract_1w, 200, 1500, "_sub_1w")
+# random_extract(path_paper_author, num_extract_10w, 20, 150, "_sub_10w")
+# random_extract(path_paper_venue, num_extract_1w, 200, 480, "_sub_1w")
+# random_extract(path_paper_venue, num_extract_10w, 20, 48, "_sub_10w")
+# random_extract(path_paper_fos, num_extract_1w, 200, 4500, "_sub_1w")
+# random_extract(path_paper_fos, num_extract_10w, 20, 450, "_sub_10w")
 
 # split_file(path, 5000000)
+
+batch_process_empty_value_AMOT(path_AMOT, path_AMOT_target)
+
