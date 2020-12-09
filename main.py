@@ -41,5 +41,18 @@ path = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_venue.csv"
 
 # split_file(path, 5000000)
 
-batch_process_empty_value_AMOT(path_AMOT, path_AMOT_target)
+# batch_process_empty_value_AMOT(path_AMOT, path_AMOT_target)
+
+# count = 0
+# with open(r"D:\测试数据集\dblp\dblp_csv\dblp_converted\processed\paper_authors_new.csv", 'r', encoding='utf-8') as f:
+#     while True:
+#         count += 1
+#         data = f.readline()
+#         if not data:
+#             break
+#         if '\x00' in data:
+#             print('line {}: {}'.format(count, data))
+#             # print(data.replace('\x00', ' '))
+
+
 
