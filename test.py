@@ -4,7 +4,7 @@ import os, re, csv, hashlib, time, datetime, codecs
 start = time.perf_counter()
 count = 0
 with open(r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv", 'r', encoding='gbk') as f:
-    while True:
+    for i in range(100):
         # data = re.split(r'[\t]', f.readline())
         # data = '"' + '","'.join(re.split(r'[\t\n]', f.readline().strip('\n'))) + '"\n'
         # data = [f.readline()[-1]]
@@ -13,12 +13,8 @@ with open(r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv", 'r', enc
         if not data:
             break
         data = data.split(',')
-        # for i, value in enumerate(data):
-        #     if value == '""':
-        #         print(len(value))
-        print(data)
-        count += 1
+        if data[1] == '中国':
+            print(data)
     f.close()
-    print('Total lines: {}'.format(count))
 
 # print('\n')

@@ -1,4 +1,99 @@
 import os, random, hashlib, glob, re
+from strsimpy.cosine import Cosine
+
+
+def er_process_with_similarity(path_original, path_target, keyword, recognizer, similarity):
+    file_origin = open(path_original, 'r', encoding='gbk')
+    path_target = path_target + keyword + '.csv'
+    file_target = open(path_target, 'w', encoding='utf-8')
+    file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR, 相似度\n")
+    count = 0
+    line_last = 0
+    while True:
+        data = file_origin.readline()
+        if not data:
+            file_target.writelines(line_last)  # 写入上一行的string
+            file_origin.close()
+            file_target.close()
+            break
+        data = data.split(',')
+        if data[1] == '中国':
+            line = [data[0], [], [], [], [], '']
+            result = recognizer.seg(data[0]).iterator()
+            tmp_list = []
+            for item in result:
+                tmp_list.append(str(item))
+            result = tmp_list
+            for item in result:
+                if '/ns' in item:
+                    line[1].append(item.split('/ns')[0])
+                elif '/nt' in item:
+                    line[2].append(item.split('/nt')[0])
+                elif '/nz' in item:
+                    line[2].append(item.split('/nz')[0])
+                elif '/ni' in item:
+                    line[3].append(item.split('/ni')[0])
+                elif '/nr' in item:
+                    line[4].append(item.split('/nr')[0])
+
+            if count > 0:
+                for i in range(1, 5):  # 处理当前行的list元素（list转string）
+                    line[i].sort()
+                    line[i] = '\"' + ','.join(line[i]) + '\"'
+                # print(line_last)
+                # print(line)
+                line_last[5] = str(similarity.similarity_profiles(similarity.get_profile(line_last[2]),
+                                                                  similarity.get_profile(
+                                                                      line[2])))  # 比较上一行和当前行的相似度，把相似度赋值给上一行
+                line_last = ','.join(line_last) + '\n'  # list转string
+                file_target.writelines(line_last)  # 写入上一行的string
+            else:
+                for i in range(1, 5):  # 处理当前行的list元素（list转string）
+                    line[i].sort()
+                    line[i] = '\"' + ','.join(line[i]) + '\"'
+            line_last = line  # 上一行改为当前行的list
+            count += 1
+            print('write {} lines.'.format(count))
+
+
+def er_process(path_original, path_target, keyword, recognizer):
+    file_origin = open(path_original, 'r', encoding='gbk')
+    path_target = path_target + keyword + '.csv'
+    file_target = open(path_target, 'w', encoding='utf-8')
+    file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR\n")
+    count = 0
+    while True:
+        data = file_origin.readline()
+        if not data:
+            file_origin.close()
+            file_target.close()
+            break
+        data = data.split(',')
+        if data[1] == '中国':
+            line = [data[0], [], [], [], []]
+            result = recognizer.seg(data[0]).iterator()
+            tmp_list = []
+            for item in result:
+                tmp_list.append(str(item))
+            result = tmp_list
+            for item in result:
+                if '/ns' in item:
+                    line[1].append(item.split('/ns')[0])
+                elif '/nt' in item:
+                    line[2].append(item.split('/nt')[0])
+                elif '/nz' in item:
+                    line[2].append(item.split('/nz')[0])
+                elif '/ni' in item:
+                    line[3].append(item.split('/ni')[0])
+                elif '/nr' in item:
+                    line[4].append(item.split('/nr')[0])
+            for i in range(1, 5):
+                line[i].sort()
+                line[i] = '\"' + ','.join(line[i]) + '\"'
+            line = ','.join(line) + '\n'
+            file_target.writelines(line)
+            count += 1
+            print('write {} lines.'.format(count))
 
 
 def tsv2csv(path_directory):
