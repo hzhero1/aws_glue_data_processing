@@ -1,5 +1,6 @@
 from pyhanlp import *
 from strsimpy.cosine import Cosine
+from strsimpy.sorensen_dice import SorensenDice
 from myutil import er_process, er_process_with_similarity
 import numpy as np
 
@@ -15,14 +16,13 @@ path_o = r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv"
 path_t = r"C:\Users\huangzh\Desktop\实体识别\\"
 
 cosine = Cosine(2)
-s0 = 'My first string'
-s1 = 'My first string'
-p0 = cosine.get_profile(s0)
-p1 = cosine.get_profile(s1)
-# print(cosine.similarity_profiles(p0, p1))
+sorensenDice = SorensenDice(2)
+s0 = '"西北农业大学,西北农林科技大学农学院"'
+s1 = '"德国汉诺威大学"'
+print(cosine.similarity(s0, s1))
+print(sorensenDice.similarity(s0, s1))
 
-
-er_process_with_similarity(path_o, path_t, 'result_cn_with_similarity', segment, cosine)
+# er_process_with_similarity(path_o, path_t, 'result_cn_with_similarity', segment, cosine, sorensenDice)
 # er_process(path_o, path_t, 'result_cn', segment)
 
 # seg = seg.iterator()

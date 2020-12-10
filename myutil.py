@@ -2,11 +2,11 @@ import os, random, hashlib, glob, re
 from strsimpy.cosine import Cosine
 
 
-def er_process_with_similarity(path_original, path_target, keyword, recognizer, similarity):
+def er_process_with_similarity(path_original, path_target, keyword, recognizer, sim1, sim2):
     file_origin = open(path_original, 'r', encoding='gbk')
     path_target = path_target + keyword + '.csv'
     file_target = open(path_target, 'w', encoding='utf-8')
-    file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR, 相似度\n")
+    file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR,Cosine similarity,Sorensen-Dice coefficient\n")
     count = 0
     line_last = 0
     while True:
@@ -18,7 +18,7 @@ def er_process_with_similarity(path_original, path_target, keyword, recognizer, 
             break
         data = data.split(',')
         if data[1] == '中国':
-            line = [data[0], [], [], [], [], '']
+            line = [data[0], [], [], [], [], '', '']
             result = recognizer.seg(data[0]).iterator()
             tmp_list = []
             for item in result:
@@ -42,9 +42,8 @@ def er_process_with_similarity(path_original, path_target, keyword, recognizer, 
                     line[i] = '\"' + ','.join(line[i]) + '\"'
                 # print(line_last)
                 # print(line)
-                line_last[5] = str(similarity.similarity_profiles(similarity.get_profile(line_last[2]),
-                                                                  similarity.get_profile(
-                                                                      line[2])))  # 比较上一行和当前行的相似度，把相似度赋值给上一行
+                line_last[5] = str(sim1.similarity(line_last[2], line[2]))  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
+                line_last[6] = str(sim2.similarity(line_last[2], line[2]))  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
                 line_last = ','.join(line_last) + '\n'  # list转string
                 file_target.writelines(line_last)  # 写入上一行的string
             else:
