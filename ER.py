@@ -1,5 +1,7 @@
 from pyhanlp import *
 from strsimpy import *
+from strsimpy.jaro_winkler import JaroWinkler
+from strsimpy.ngram import *
 from myutil import er_process, er_process_with_similarity
 import numpy as np
 
@@ -11,6 +13,7 @@ Term = JClass("com.hankcs.hanlp.seg.common.Term")
 segment = HanLP.newSegment().enableOrganizationRecognize(True)
 seg = segment.seg(org)
 
+path_o = r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv"
 path_o1 = r"C:\Users\huangzh\Desktop\实体识别\result_cn.csv"
 path_o2 = r"C:\Users\huangzh\Desktop\实体识别\result_cn2.csv"
 path_t = r"C:\Users\huangzh\Desktop\实体识别\\"
@@ -36,16 +39,20 @@ cosine = Cosine(2)
 sorensenDice = SorensenDice(2)
 jaccard = Jaccard(2)
 qgram = QGram(2)
+jaroWinkler = JaroWinkler()
+normalizedLevenshtein = NormalizedLevenshtein()
 stringSimilarity = StringDistance()
-s0 = '安徽财经大学管理科学与工程学院'
-s1 = '安徽财经大学管理科学'
+s0 = '烟台大学人文学院'
+s1 = '江西农业大学'
 # print(cosine.get_profile(s1))
 # print(sorensenDice.get_profile(s1))
 print(cosine.similarity(s0, s1))
 print(sorensenDice.similarity(s0, s1))
 print(jaccard.similarity(s0, s1))
+print(jaroWinkler.similarity(s0, s1))
+print(normalizedLevenshtein.similarity(s0, s1))
 # print(qgram.distance(s0, s1))
-similarity_list = [cosine, jaccard]
+similarity_list = [jaroWinkler, cosine, sorensenDice, jaccard, normalizedLevenshtein]
 
 er_process_with_similarity(path_o1, path_o2, path_t, 'result_cn_with_similarity', similarity_list)
 # er_process(path_o, path_t, 'result_cn', segment)

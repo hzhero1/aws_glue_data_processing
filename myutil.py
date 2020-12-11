@@ -7,7 +7,8 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
     path_target = path_target + keyword + '.csv'
     file_target = open(path_target, 'w', encoding='utf-8')
     file_origin1.readline()
-    file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR, institution2,Cosine,Jaccard\n")
+    file_target.writelines(
+        "institution_1,NT & NZ,institution_2,NT & NZ,jaroWinkler,cosine,sorensenDice,jaccard,normalizedLevenshtein\n")
     count1 = 0
     count2 = 0
     while True:
@@ -19,19 +20,19 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
             file_target.close()
             break
         data1 = data1.split('","')
-        data1.pop()
+        data1 = [data1[0], data1[2]]
         while True:
             data2 = file_origin2.readline()
             if not data2:
                 file_origin2.close()
                 break
             data2 = data2.split('","')
-            data2.pop()
             line = data1.copy()
             line.append(data2[0][1:])
+            line.append(data2[2])
             line = ['","'.join(line) + '"']
             for metric in similarity_list:
-                line.append(str(metric.similarity(data1[2], data2[2])))
+                line.append(str(metric.similarity(data1[1], data2[2])))
             line = ','.join(line) + '\n'
             file_target.writelines(line)  # 计算完当前行和所有行的相似度，写入行
             count2 += 1
@@ -72,8 +73,11 @@ def er_process(path_original, path_target, keyword, recognizer):
                 elif '/nr' in item:
                     line[4].append(item.split('/nr')[0])
             for i in range(1, 5):
-                line[i].sort()
-                line[i] = '\"' + ','.join(line[i]) + '\"'
+                if line[i]:
+                    line[i].sort()
+                    line[i] = '\"' + ','.join(line[i]) + '\"'
+                else:
+                    line[i] = '"null"'
             line = ','.join(line) + '\n'
             file_target.writelines(line)
             count += 1
