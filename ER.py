@@ -52,7 +52,7 @@ print(jaccard.similarity(s0, s1))
 print(jaroWinkler.similarity(s0, s1))
 print(normalizedLevenshtein.similarity(s0, s1))
 # print(qgram.distance(s0, s1))
-similarity_list = [jaroWinkler, cosine, sorensenDice, jaccard, normalizedLevenshtein]
+similarity_list = [jaroWinkler, cosine, jaccard, normalizedLevenshtein]
 
 er_process_with_similarity(path_o1, path_o2, path_t, 'result_cn_with_similarity', similarity_list)
 # er_process(path_o, path_t, 'result_cn', segment)

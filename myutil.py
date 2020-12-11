@@ -8,7 +8,7 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
     file_target = open(path_target, 'w', encoding='utf-8')
     file_origin1.readline()
     file_target.writelines(
-        "institution_1,NT & NZ,institution_2,NT & NZ,jaroWinkler,cosine,sorensenDice,jaccard,normalizedLevenshtein\n")
+        "institution_1,NT & NZ,institution_2,NT & NZ,jaroWinkler,cosine,jaccard,normalizedLevenshtein\n")
     count1 = 0
     count2 = 0
     while True:
