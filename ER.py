@@ -1,6 +1,5 @@
 from pyhanlp import *
-from strsimpy.cosine import Cosine
-from strsimpy.sorensen_dice import SorensenDice
+from strsimpy import *
 from myutil import er_process, er_process_with_similarity
 import numpy as np
 
@@ -16,14 +15,39 @@ path_o1 = r"C:\Users\huangzh\Desktop\实体识别\result_cn.csv"
 path_o2 = r"C:\Users\huangzh\Desktop\实体识别\result_cn2.csv"
 path_t = r"C:\Users\huangzh\Desktop\实体识别\\"
 
+# from .cosine import Cosine
+# from .damerau import Damerau
+# from .jaccard import Jaccard
+# from .levenshtein import Levenshtein
+# from .longest_common_subsequence import LongestCommonSubsequence
+# from .metric_lcs import MetricLCS
+# from .ngram import NGram
+# from .normalized_levenshtein import NormalizedLevenshtein
+# from .optimal_string_alignment import OptimalStringAlignment
+# from .qgram import QGram
+# from .shingle_based import ShingleBased
+# from .sorensen_dice import SorensenDice
+# from .string_distance import StringDistance
+# from .string_similarity import StringSimilarity
+# from .weighted_levenshtein import WeightedLevenshtein
+# from .sift4 import SIFT4Options, SIFT4
+
 cosine = Cosine(2)
 sorensenDice = SorensenDice(2)
-s0 = '"西北农业大学,西北农林科技大学农学院"'
-s1 = '"德国汉诺威大学"'
-# print(cosine.similarity(s0, s1))
-# print(sorensenDice.similarity(s0, s1))
+jaccard = Jaccard(2)
+qgram = QGram(2)
+stringSimilarity = StringDistance()
+s0 = '安徽财经大学管理科学与工程学院'
+s1 = '安徽财经大学管理科学'
+# print(cosine.get_profile(s1))
+# print(sorensenDice.get_profile(s1))
+print(cosine.similarity(s0, s1))
+print(sorensenDice.similarity(s0, s1))
+print(jaccard.similarity(s0, s1))
+# print(qgram.distance(s0, s1))
+similarity_list = [cosine, jaccard]
 
-er_process_with_similarity(path_o1, path_o2, path_t, 'result_cn_with_similarity', cosine, sorensenDice)
+er_process_with_similarity(path_o1, path_o2, path_t, 'result_cn_with_similarity', similarity_list)
 # er_process(path_o, path_t, 'result_cn', segment)
 
 # seg = seg.iterator()
