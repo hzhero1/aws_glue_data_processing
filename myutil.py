@@ -2,57 +2,38 @@ import os, random, hashlib, glob, re
 from strsimpy.cosine import Cosine
 
 
-def er_process_with_similarity(path_original, path_target, keyword, recognizer, sim1, sim2):
-    file_origin = open(path_original, 'r', encoding='gbk')
+def er_process_with_similarity(path_original1, path_original2, path_target, keyword, sim1, sim2):
+    file_origin1 = open(path_original1, 'r', encoding='utf-8')
+    file_origin2 = open(path_original2, 'r', encoding='utf-8')
     path_target = path_target + keyword + '.csv'
     file_target = open(path_target, 'w', encoding='utf-8')
+    file_origin1.readline()
+    file_origin2.readline()
     file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR,Cosine similarity,Sorensen-Dice coefficient\n")
     count = 0
+    count2 = 0
     line_last = 0
     while True:
-        data = file_origin.readline()
-        if not data:
-            file_target.writelines(line_last)  # 写入上一行的string
-            file_origin.close()
-            file_target.close()
-            break
-        data = data.split(',')
-        if data[1] == '中国':
-            line = [data[0], [], [], [], [], '', '']
-            result = recognizer.seg(data[0]).iterator()
-            tmp_list = []
-            for item in result:
-                tmp_list.append(str(item))
-            result = tmp_list
-            for item in result:
-                if '/ns' in item:
-                    line[1].append(item.split('/ns')[0])
-                elif '/nt' in item:
-                    line[2].append(item.split('/nt')[0])
-                elif '/nz' in item:
-                    line[2].append(item.split('/nz')[0])
-                elif '/ni' in item:
-                    line[3].append(item.split('/ni')[0])
-                elif '/nr' in item:
-                    line[4].append(item.split('/nr')[0])
-
-            if count > 0:
-                for i in range(1, 5):  # 处理当前行的list元素（list转string）
-                    line[i].sort()
-                    line[i] = '\"' + ','.join(line[i]) + '\"'
-                # print(line_last)
-                # print(line)
-                line_last[5] = str(sim1.similarity(line_last[2], line[2]))  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
-                line_last[6] = str(sim2.similarity(line_last[2], line[2]))  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
-                line_last = ','.join(line_last) + '\n'  # list转string
+        data1 = file_origin1.readline()
+        while True:
+            data2 = file_origin2.readline()
+            if not data:
+                file_target.writelines(line_last)  # 写入上一行的string
+                file_origin2.close()
+                # file_target.close()
+                break
+            line = data2.split('","')
+            line.pop()
+            if count2 > 0:
+                line_last.append(str(sim1.similarity(line_last[2], line[2])))  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
+                line_last.append(str(sim2.similarity(line_last[2], line[2])))  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
+                line_last = '","'.join(line_last) + '"\n'  # list转string
                 file_target.writelines(line_last)  # 写入上一行的string
             else:
-                for i in range(1, 5):  # 处理当前行的list元素（list转string）
-                    line[i].sort()
-                    line[i] = '\"' + ','.join(line[i]) + '\"'
+                pass
             line_last = line  # 上一行改为当前行的list
-            count += 1
-            print('write {} lines.'.format(count))
+            count2 += 1
+        print('write {} lines.'.format(count))
 
 
 def er_process(path_original, path_target, keyword, recognizer):
@@ -69,7 +50,7 @@ def er_process(path_original, path_target, keyword, recognizer):
             break
         data = data.split(',')
         if data[1] == '中国':
-            line = [data[0], [], [], [], []]
+            line = ['"' + data[0] + '"', [], [], [], []]
             result = recognizer.seg(data[0]).iterator()
             tmp_list = []
             for item in result:

@@ -3,7 +3,7 @@ import os, re, csv, hashlib, time, datetime, codecs
 # 记录规则执行开始时间
 start = time.perf_counter()
 count = 0
-with open(r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv", 'r', encoding='gbk') as f:
+with open(r"C:\Users\huangzh\Desktop\实体识别\result_cn.csv", 'r', encoding='utf-8') as f:
     for i in range(100):
         # data = re.split(r'[\t]', f.readline())
         # data = '"' + '","'.join(re.split(r'[\t\n]', f.readline().strip('\n'))) + '"\n'
@@ -12,9 +12,8 @@ with open(r"C:\Users\huangzh\Desktop\实体识别\20201116-机构.csv", 'r', enc
         data = f.readline()
         if not data:
             break
-        data = data.split(',')
-        if data[1] == '中国':
-            print(data)
+        data = data.split('","')
+        print(data)
     f.close()
 
 # print('\n')
