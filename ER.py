@@ -12,7 +12,8 @@ Term = JClass("com.hankcs.hanlp.seg.common.Term")
 segment = HanLP.newSegment().enableOrganizationRecognize(True)
 seg = segment.seg(org)
 
-path_o = r"C:\Users\huangzh\Desktop\实体识别\result_cn.csv"
+path_o1 = r"C:\Users\huangzh\Desktop\实体识别\result_cn.csv"
+path_o2 = r"C:\Users\huangzh\Desktop\实体识别\result_cn2.csv"
 path_t = r"C:\Users\huangzh\Desktop\实体识别\\"
 
 cosine = Cosine(2)
@@ -22,7 +23,7 @@ s1 = '"德国汉诺威大学"'
 # print(cosine.similarity(s0, s1))
 # print(sorensenDice.similarity(s0, s1))
 
-er_process_with_similarity(path_o, path_t, 'result_cn_with_similarity', cosine, sorensenDice)
+er_process_with_similarity(path_o1, path_o2, path_t, 'result_cn_with_similarity', cosine, sorensenDice)
 # er_process(path_o, path_t, 'result_cn', segment)
 
 # seg = seg.iterator()

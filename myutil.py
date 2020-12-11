@@ -4,36 +4,47 @@ from strsimpy.cosine import Cosine
 
 def er_process_with_similarity(path_original1, path_original2, path_target, keyword, sim1, sim2):
     file_origin1 = open(path_original1, 'r', encoding='utf-8')
-    file_origin2 = open(path_original2, 'r', encoding='utf-8')
     path_target = path_target + keyword + '.csv'
     file_target = open(path_target, 'w', encoding='utf-8')
     file_origin1.readline()
-    file_origin2.readline()
     file_target.writelines("contrib_institution_display,NS,NT & NZ,NI,NR,Cosine similarity,Sorensen-Dice coefficient\n")
-    count = 0
+    count1 = 0
     count2 = 0
-    line_last = 0
     while True:
+        file_origin2 = open(path_original2, 'r', encoding='utf-8')  # 打开源数据的备份，后面循环遍历
+        file_origin2.readline()
         data1 = file_origin1.readline()
-        while True:
-            data2 = file_origin2.readline()
-            if not data:
-                file_target.writelines(line_last)  # 写入上一行的string
-                file_origin2.close()
-                # file_target.close()
-                break
-            line = data2.split('","')
-            line.pop()
-            if count2 > 0:
-                line_last.append(str(sim1.similarity(line_last[2], line[2])))  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
-                line_last.append(str(sim2.similarity(line_last[2], line[2])))  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
-                line_last = '","'.join(line_last) + '"\n'  # list转string
-                file_target.writelines(line_last)  # 写入上一行的string
-            else:
-                pass
-            line_last = line  # 上一行改为当前行的list
-            count2 += 1
-        print('write {} lines.'.format(count))
+        if not data1:  # 读完关闭文件
+            file_origin1.close()
+            file_target.close()
+            break
+        data1 = data1.split('","')
+        data1.pop()
+        if count1 > 0:
+            while True:
+                data2 = file_origin2.readline()
+                if not data2:
+                    file_origin2.close()
+                    break
+                data2 = data2.split('","')
+                data2.pop()
+                if count2 > 0:
+                    data1.append(data2[0]+'"')
+                    if len(data1[2]) == 0 or len(data2[2]) == 0:
+                        data1.append('1')  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
+                        data1.append('1')  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
+                    else:
+                        data1.append(str(sim1.similarity(data1[2], data2[2])))  # cosin 比较上一行和当前行的相似度，把相似度赋值给上一行
+                        data1.append(str(sim2.similarity(data1[2], data2[2])))  # coef 比较上一行和当前行的相似度，把相似度赋值给上一行
+                else:
+                    pass
+                count2 += 1
+        else:
+            pass
+        data1 = '","'.join(data1) + '\n'
+        file_target.writelines(data1)  # 计算完当前行和所有行的相似度，写入行
+        count1 += 1
+        print('write {} lines.'.format(count1))
 
 
 def er_process(path_original, path_target, keyword, recognizer):
