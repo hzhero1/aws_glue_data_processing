@@ -1,5 +1,4 @@
 import os, random, hashlib, glob, re
-from strsimpy.cosine import Cosine
 
 
 def er_process_with_similarity(path_original1, path_original2, path_target, keyword, similarity_list):
@@ -12,7 +11,7 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
     count1 = 0
     count2 = 0
     while True:
-        file_origin2 = open(path_original2, 'r', encoding='utf-8')  # 打开源数据的备份，后面循环遍历
+        file_origin2 = open(path_original2, 'r', encoding='utf-8')  # 打开原数据的备份，后面循环遍历
         file_origin2.readline()
         data1 = file_origin1.readline()
         if not data1:  # 读完关闭文件
@@ -21,6 +20,8 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
             break
         data1 = data1.split('","')
         data1 = [data1[0], data1[2]]
+        file1_seek = file_origin1.tell()
+        file_origin2.seek(file1_seek)
         while True:
             data2 = file_origin2.readline()
             if not data2:
@@ -31,12 +32,17 @@ def er_process_with_similarity(path_original1, path_original2, path_target, keyw
             line.append(data2[0][1:])
             line.append(data2[2])
             line = ['","'.join(line) + '"']
+            flag = 0
             for metric in similarity_list:
-                line.append(str(metric.similarity(data1[1], data2[2])))
-            line = ','.join(line) + '\n'
-            file_target.writelines(line)  # 计算完当前行和所有行的相似度，写入行
-            count2 += 1
-
+                similarity = metric.similarity(data1[1], data2[2])
+                if similarity > 0.6:
+                    flag = 1
+                line.append(str(similarity))
+            if flag == 1:
+                line = ','.join(line) + '\n'
+                file_target.writelines(line)  # 计算完当前行和所有行的相似度，写入行
+                count2 += 1
+                flag = 0
         count1 += 1
         print('write {} entity'.format(count1))
 
