@@ -104,11 +104,11 @@ def tsv2csv(path_directory):
 
 def txt2csv(path_directory):
     count = 0
-    for name in glob.glob(path_directory + r"\*.csv"):
+    for name in glob.glob(path_directory + r"\*.txt"):
         tsv_file = open(name, 'r', encoding='utf-8')
-        csv_file = open(os.path.splitext(name)[0] + "_t.csv", 'w', encoding='utf-8')
+        csv_file = open(os.path.splitext(name)[0] + ".csv", 'w', encoding='utf-8')
         while True:
-            data = tsv_file.readline()
+            data = tsv_file.readline().replace('"', '""')
             if data:
                 data = '"' + '","'.join(re.split(r'[|\n]', data.strip('\n'))) + '"\n'
                 csv_file.writelines(data)
@@ -249,6 +249,21 @@ def batch_process_empty_value_AMOT(path_directory, target_directory):
         print('Processed {} files.'.format(file_count))
 
 
+def batch_backslash_processing(path_directory, target_directory):
+    file_count = 0
+    for path in glob.glob(path_directory + r"\*.csv"):
+        csv_origin = open(path, 'r', encoding='utf-8')
+        csv_target = open(target_directory + os.path.split(path)[1], 'w', encoding='utf-8')
+        while True:
+            data = csv_origin.readline()
+            if len(data) == 0:
+                csv_origin.close()
+                csv_target.close()
+                break
+            data = data.replace('\\', '')
+            csv_target.writelines(data)
+
+
 # 处理反斜杠
 def backslash_processing(path):
     csv_origin = open(path, 'r', encoding='utf-8')
@@ -256,12 +271,11 @@ def backslash_processing(path):
     while True:
         data = csv_origin.readline()
         if len(data) == 0:
+            csv_origin.close()
+            csv_target.close()
             break
         data = data.replace('\\', '')
         csv_target.writelines(data)
-
-    csv_origin.close()
-    csv_target.close()
 
 
 # 文件分段

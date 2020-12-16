@@ -19,6 +19,11 @@ path = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_venue.csv"
 
 # process_empty_value_dblp(path)
 
+# txt2csv(r"D:\测试数据集\TFACC\AMOT\test_result")
+# batch_process_empty_value_AMOT(r"D:\测试数据集\TFACC\AMOT\test_result", r"D:\测试数据集\TFACC\AMOT\test_result\processed\\")
+# batch_backslash_processing(r"D:\测试数据集\TFACC\AMOT\test_result\processed",
+#                            r"D:\测试数据集\TFACC\AMOT\test_result\processed\final\\")
+process_empty_value_dblp(r"D:\测试数据集\TFACC\AMOT\test_result\processed\final\test_result_2017.csv")
 ## extract imdb
 # random_extract(path_title_basics, num_extract_1w, 200, 720, "_sub_1w")
 # random_extract(path_title_basics, num_extract_10w, 20, 72, "_sub_10w")
@@ -53,6 +58,3 @@ path = r"D:\测试数据集\dblp\dblp_csv\dblp_converted\paper_venue.csv"
 #         if '\x00' in data:
 #             print('line {}: {}'.format(count, data))
 #             # print(data.replace('\x00', ' '))
-
-
-
