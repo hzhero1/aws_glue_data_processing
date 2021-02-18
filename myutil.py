@@ -115,15 +115,17 @@ def txt2csv(path_directory):
         csv_file = open(os.path.splitext(name)[0] + ".csv", 'w', encoding='utf-8')
         while True:
             data = tsv_file.readline().replace('"', '""')
+            if data.startswith(r'\n'):
+                continue
             if data:
-                data = '"' + '","'.join(re.split(r'[|\n]', data.strip('\n'))) + '"\n'
+                data = '"' + '","'.join(re.split(r'[\t\n]', data.strip('\n'))) + '"\n'
                 csv_file.writelines(data)
             else:
                 break
         tsv_file.close()
         csv_file.close()
         count += 1
-        print("Convert {} .tsv file to .csv file".format(count))
+        print("Convert {} .txt file to .csv file".format(count))
 
 
 def empty_column_processing(path_directory):
@@ -273,7 +275,7 @@ def batch_backslash_processing(path_directory, target_directory):
 # 处理反斜杠
 def backslash_processing(path):
     csv_origin = open(path, 'r', encoding='utf-8')
-    csv_target = open(os.path.splitext(path)[0] + "_stripped.csv", 'w', encoding='utf-8')
+    csv_target = open(os.path.splitext(path)[0] + "_processed.csv", 'w', encoding='utf-8')
     while True:
         data = csv_origin.readline()
         if len(data) == 0:
@@ -301,3 +303,23 @@ def split_file(path, split_num):
         print("Split fragment{}.".format(fragment))
         csv_target.close()
         fragment += 1
+
+
+def replace_character_batch(replace, to, original_format, target_format, path_directory, target_directory):
+    file_count = 0
+    if not os.path.exists(target_directory):
+        os.mkdir(target_directory)
+    for path in glob.glob(path_directory + r"\*." + original_format):
+        csv_origin = open(path, 'r', encoding='utf-8')
+        csv_target = open(target_directory + '\\' + os.path.split(path)[1].rsplit('.', 1)[0] + '.' + target_format, 'w',
+                          encoding='utf-8')
+        while True:
+            data = csv_origin.readline()
+            if len(data) == 0:
+                csv_origin.close()
+                csv_target.close()
+                break
+            data = data.replace(replace, to)
+            csv_target.writelines(data)
+        print("process {} file".format(file_count))
+        file_count += 1
